@@ -24,10 +24,15 @@
 
         <?php
 
-        //criando variavel que recebe a URL da api
+        /* variaveis que irão setar as datas de inicio e fim da busca da API
+        * substitui na url da API as variaveis para poder estar sempre atualizado 
+        * para o dia atual do sistema
+        */
 
         $inicio = date('m-d-Y', strtotime("-7 days")); 
         $final = date('m-d-Y');
+
+        //variavel que recebe a URL da api
         $url = 'https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@dataInicial=\''.$inicio.'\'&@dataFinalCotacao=\''.$final.'\'&$top=1&$orderby=dataHoraCotacao%20desc&$format=json&$select=cotacaoCompra,dataHoraCotacao';
 
         $dados = json_decode(file_get_contents($url), true);
