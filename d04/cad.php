@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="../../css/style.css">
 
     <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
@@ -16,20 +16,49 @@
 
     <header class="mt-3 mb-3">
         <h1>
-            Resultado do processamento
+            Conversor de moedas v2.0
         </h1>
     </header>
 
     <main>
+
         <?php
-        //retorna uma variável "array(2) { ["name"]=> string(7) "Emanuel" ["lastName"]=> string(11) "Evangelista" }"
-        // var_dump($_GET) //super global que recebe o que foi recebido de index.php
 
-        $name = $_GET["name"] ?? "Sem nome"; //recebe o 'name' recebido de index.php 
-        $lastName = $_GET["lastName"] ?? "desconhecido"; //recebe o 'lastName' recebido de index.php 
+        //criando variavel que recebe a URL da api
 
-        echo "<p>É um prazer te conhecer <strong>$name $lastName</strong>! Este é o meu site</p>";
+        $inicio = date('m-d-Y', strtotime("-7 days")); 
+        $final = date('m-d-Y');
+        $url = 'https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?@dataInicial=\''.$inicio.'\'&@dataFinalCotacao=\''.$final.'\'&$top=1&$orderby=dataHoraCotacao%20desc&$format=json&$select=cotacaoCompra,dataHoraCotacao';
+
+        $dados = json_decode(file_get_contents($url), true);
+
+        $cotacao = $dados["value"][0]["cotacaoCompra"];
+
+        //agora mantem o mesmo do exercicio anterior, apenas altera a divisão para a 
+        //variavel '$cotacao', que é o que retorna da API do banco central
+        
+        $real = $_GET["real"];
+        $dolar = $real / $cotacao;
+
+        //forma tradicional, fazendo na mão a formatação das moedas
+
+        /*
+        echo "<p>Seus R$". number_format($real, 2, ",", ".") ." valem <strong>US$". number_format($dolar, 2, ",", ".") ."</strong></p>"; 
+        */
+        
+        //forma de fazer a formatação de moedas automaticamente
+        $padrao = numfmt_create("pt_BR", NumberFormatter::CURRENCY);
+
+        echo "Seus ". numfmt_format_currency($padrao, $real, "BRL")." valem <strong>". numfmt_format_currency($padrao, $dolar, "USD")."*</strong>
+        
+        <br />
+        <br />
+        ";
+        
         ?>
+
+        <p>*Cotação obtida diretamente do site do <a target="_blank" href="https://dadosabertos.bcb.gov.br/">Banco Central do Brasil</a></p>
+
     </main>
 
     <form action="index.php" method="get">
