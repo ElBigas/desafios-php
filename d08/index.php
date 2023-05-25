@@ -16,7 +16,7 @@
 
     <header class="mt-3 mb-3">
         <h1>
-            Informe seu salário
+            Informe um número
         </h1>
     </header>
 
@@ -24,17 +24,14 @@
 
         <?php
         //capturando valores
-        $valor1 = $_GET['v1'] ?? 0;
-        $salario = $_GET['v1'] ?? 0;
+        $valor = $_GET['v1'] ?? 1;
         ?>
 
         <form action="<?= $_SERVER['PHP_SELF'] ?>" method="get">
-            <label for="v1" class="form-label">Salário: </label>
-            <input type="number" name="v1" id="v1" value="<?= $valor1 ?>">
+            <label for="v1" class="form-label">Número: </label>
+            <input type="number" name="v1" id="v1" value="<?= $valor ?>">
 
-            <p>Considerando o salário mínimo de <strong>R$1380,00</strong></p>
-
-            <button type="submit" class="btn btn-primary mb-1" id="btn-send">Calcular</button>
+            <button type="submit" class="btn btn-primary mb-1" id="btn-send">Analizar</button>
         </form>
     </main>
 
@@ -42,14 +39,13 @@
         <h2>Resultado final</h2>
         <?php
 
-            $cont = 0;
+            $raizQ = sqrt($valor);
+            $raizC = pow($valor,(1/3));;
 
-            while($valor1 > 1380) {
-                $valor1 = $valor1 - 1380;
-                $cont = $cont + 1;
-            };
-
-            echo "<p>Quem recebe um salário de <strong>R$$salario</strong> ganha <strong>$cont salários mínimos</strong> + <strong>R$$valor1,00.</strong></p>";
+            echo "<p>Analisando o número <strong>$valor</strong></p>";
+            echo "<p>A sua raiz quadrada é <strong>".number_format($raizQ, 3, ",", ".")."</strong></p>";
+            echo "<p>A sua raiz cúbica é <strong>".number_format($raizC, 3, ",", ".")."</strong></p>";
+            
         ?>
     </section>
 
